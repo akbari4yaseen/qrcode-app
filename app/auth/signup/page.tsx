@@ -9,6 +9,8 @@ import SuspenseWrapper from '@/components/SuspenseWrapper';
 interface SignUpFormData {
   email: string;
   password: string;
+  firstName: string;
+  lastName: string;
   confirmPassword: string;
 }
 
@@ -17,6 +19,8 @@ function SignUpPage() {
   const [formData, setFormData] = useState<SignUpFormData>({
     email: '',
     password: '',
+    firstName: '',
+    lastName: '',
     confirmPassword: '',
   });
   const searchParams = useSearchParams();
@@ -37,6 +41,8 @@ function SignUpPage() {
       const res = await axios.post("/api/keycloak/users/qrcode", {
         email: formData.email,
         password: formData.password,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
         qrCode: token,
       });
       console.log("Sign up response:", res.data);
@@ -58,6 +64,34 @@ function SignUpPage() {
           Sign Up
         </h2>
         <form onSubmit={handleSignUp}>
+          <div className="mb-4">
+            <label className="block mb-2 text-gray-700" htmlFor="firstName">
+              First Name
+            </label>
+            <input
+              id="firstName"
+              type="text"
+              name="firstName"
+              className="w-full border border-gray-300 p-2 rounded text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={formData.firstName}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block mb-2 text-gray-700" htmlFor="lastName">
+              Last Name
+            </label>
+            <input
+              id="lastName"
+              type="text"
+              name="lastName"
+              className="w-full border border-gray-300 p-2 rounded text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={formData.lastName}
+              onChange={handleChange}
+              required
+            />
+          </div>
           <div className="mb-4">
             <label className="block mb-2 text-gray-700" htmlFor="email">
               Email
