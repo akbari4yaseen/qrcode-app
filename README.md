@@ -20,6 +20,7 @@ The **qr-code-backend** is responsible for generating and validating QR codes, w
 
 - **Domain:** The app is hosted on [matomo.gutricious.com](http://matomo.gutricious.com).
 - **Port:** The application runs on port **3002**.
+- **Server IP:** 116.203.82.82
 - **Accessibility:** The app is properly working on the domain only, ensuring users access it without needing to specify the port in the URL.
 
 ---
