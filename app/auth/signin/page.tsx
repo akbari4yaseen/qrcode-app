@@ -5,8 +5,9 @@ import { signIn } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 import ServiceAgreementModal from '@/components/ServiceAgreementModal';
 import axios from 'axios';
+import SuspenseWrapper from '@/components/SuspenseWrapper';
 
-export default function SignInPage() {
+function SignInPage() {
   const [showAgreement, setShowAgreement] = useState<boolean>(true);
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -86,5 +87,13 @@ export default function SignInPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function SignInPageRoute() {
+  return (
+    <SuspenseWrapper>
+      <SignInPage />
+    </SuspenseWrapper>
   );
 }

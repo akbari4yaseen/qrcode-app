@@ -14,6 +14,7 @@ export async function GET(req: NextRequest) {
   try {
     const response = await axios.get(`${backend_url}/validate/${token}`);
     return NextResponse.json(response.data);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error("Error in proxy:", error.response?.data || error.message);
     return NextResponse.json(

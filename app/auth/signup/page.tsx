@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import ServiceAgreementModal from '@/components/ServiceAgreementModal';
 import axios from 'axios';
+import SuspenseWrapper from '@/components/SuspenseWrapper';
 
 interface SignUpFormData {
   email: string;
@@ -11,7 +12,7 @@ interface SignUpFormData {
   confirmPassword: string;
 }
 
-export default function SignUpPage() {
+function SignUpPage() {
   const [showAgreement, setShowAgreement] = useState<boolean>(true);
   const [formData, setFormData] = useState<SignUpFormData>({
     email: '',
@@ -108,5 +109,13 @@ export default function SignUpPage() {
         </form>
       </div>
     </div>
+  );
+}
+
+export default function SignUpPageRoute() {
+  return (
+    <SuspenseWrapper>
+      <SignUpPage />
+    </SuspenseWrapper>
   );
 }
