@@ -16,6 +16,14 @@ The **qr-code-backend** is responsible for generating and validating QR codes, w
 
 ---
 
+## Deployment Details
+
+- **Domain:** The app is hosted on [matomo.gutricious.com](http://matomo.gutricious.com).
+- **Port:** The application runs on port **3002**.
+- **Accessibility:** The app is properly working on the domain only, ensuring users access it without needing to specify the port in the URL.
+
+---
+
 ## Application Pages
 
 ### 1. Validate Page
@@ -89,4 +97,4 @@ The **qr-code-backend** is responsible for generating and validating QR codes, w
 
 ---
 
-This documentation outlines the core functions of the **QRCode-App** and how it integrates with related backend services. For further technical details or troubleshooting, refer to the additional developer guides or system architecture documents.
+This documentation outlines the core functions of the **QRCode-App**, its deployment details, and how it integrates with related backend services. For further technical details or troubleshooting, refer to the additional developer guides or system architecture documents.
