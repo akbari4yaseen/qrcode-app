@@ -5,23 +5,29 @@ import { useSession } from 'next-auth/react';
 import { useParams, useRouter } from 'next/navigation';
 import ServiceAgreementModal from '@/components/ServiceAgreementModal';
 import axios from 'axios';
+import { Navigation } from '@/components/Navigation';
+import SuspenseWrapper from '@/components/SuspenseWrapper';
 
-export default function ValidatePage() {
+function ValidatePage() {
   const params = useParams<{ token: string }>();
   const token = params.token;
   const router = useRouter();
   const { data: session } = useSession();
 
-  // States for token, loading, and agreement acceptance
+  // Navigation state (to match other pages)
+  const [isHovered, setIsHovered] = useState(false);
+  const [navOpen, setNavOpen] = useState<boolean>(false);
+  const [isLangBtnHovered, setIsLangBtnHovered] = useState(false);
+  const [langOpen, setLangOpen] = useState<boolean>(false);
+
+  // Original states maintained
   const [isTokenValid, setIsTokenValid] = useState<boolean | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [agreementAccepted, setAgreementAccepted] = useState<boolean>(false);
-
-  // State to control when to show the Service Agreement Modal.
   const [showAgreement, setShowAgreement] = useState<boolean>(false);
   const [targetRoute, ] = useState<string>("/");
 
-  // Validate token on mount
+  // Validate token on mount - original logic preserved
   useEffect(() => {
     if (!token) {
       console.warn("[VALIDATION] No token provided in URL parameters.");
@@ -44,8 +50,7 @@ export default function ValidatePage() {
     validateToken();
   }, [token]);
 
-  // Handler for when the service agreement is accepted.
-  // It sets agreementAccepted, hides the modal, and pushes the target route.
+  // Original handler for agreement acceptance
   const handleAgreementAccept = async () => {
     if (!session?.user) {
       console.warn("[AGREEMENT] No session user available on agreement acceptance.");
@@ -71,7 +76,7 @@ export default function ValidatePage() {
     }
   };
 
-  // Automatic redirection logic for users.
+  // Original redirection logic
   useEffect(() => {
     console.log("[REDIRECT] Checking redirection conditions:", { loading, isTokenValid, session, agreementAccepted });
     if (!loading && isTokenValid) {
@@ -85,8 +90,7 @@ export default function ValidatePage() {
     }
   }, [loading, isTokenValid, session, agreementAccepted, router]);
 
-  // Once the session is available and the agreement is accepted,
-  // retrieve the session email and qrcode, and log them.
+  // Original session and agreement tracking
   useEffect(() => {
     if (session && agreementAccepted) {
       const email = session.user?.email;
@@ -94,22 +98,60 @@ export default function ValidatePage() {
       console.log("[SESSION] Agreement accepted and session active. Email:", email, "QR code:", qrcode);
       // Later, you can send this data to your backend server.
     }
-  }, [session, agreementAccepted]);
+  }, [session, agreementAccepted, token]);
 
+  // Render common wrapper for consistent layout
+  const renderPageContainer = (content: React.ReactNode) => {
+    return (
+      <section>
+        <div className='custom-container'>
+          <Navigation 
+            navOpen={navOpen} 
+            langOpen={langOpen} 
+            setLangOpen={setLangOpen} 
+            setNavOpen={setNavOpen} 
+            isHovered={isHovered} 
+            setIsHovered={setIsHovered} 
+            isLangBtnHovered={isLangBtnHovered} 
+            setIsLangBtnHovered={setIsLangBtnHovered} 
+          />
+        </div>
+        <div className="flex flex-col items-center justify-center mt-[50px] px-6 py-8 mx-auto lg:py-0 cera-pro-font no-65">
+          {content}
+        </div>
+      </section>
+    );
+  };
+
+  // Loading state
   if (loading) {
     console.log("[RENDER] Loading state active. Rendering loading component.");
-    return (
-      <div className="flex items-center justify-center h-screen">
-        Loading...
+    return renderPageContainer(
+      <div className="w-full bg-white rounded-lg shadow-xl md:mt-0 sm:max-w-md xl:p-0">
+        <div className="p-6 space-y-4 md:space-y-6 sm:p-8 flex flex-col items-center justify-center">
+          <div className="w-12 h-12 rounded-full border-4 border-t-[#2ae8d3] border-r-[#2ae8d3] border-b-gray-200 border-l-gray-200 animate-spin"></div>
+          <p className="text-gray-700 mt-4">Validating your token...</p>
+        </div>
       </div>
     );
   }
 
+  // Invalid token state
   if (!isTokenValid) {
     console.log("[RENDER] Invalid token. Rendering error message.");
-    return (
-      <div className="flex items-center justify-center h-screen">
-        Invalid or expired token.
+    return renderPageContainer(
+      <div className="w-full bg-white rounded-lg shadow-xl md:mt-0 sm:max-w-md xl:p-0">
+        <div className="p-6 space-y-4 md:space-y-6 sm:p-8 text-center">
+          <div className="text-red-500 text-5xl mb-4">×</div>
+          <h2 className="text-xl font-bold text-gray-900">Invalid or Expired Token</h2>
+          <p className="text-gray-700 mb-4">The validation link you've used is no longer valid.</p>
+          <button 
+            onClick={() => router.push('/')}
+            className="btn-primary bg-[#2ae8d3] w-full"
+          >
+            Return to Home
+          </button>
+        </div>
       </div>
     );
   }
@@ -123,29 +165,35 @@ export default function ValidatePage() {
   // Render Sign In / Sign Up options for non-session users.
   if (!session) {
     console.log("[RENDER] No session detected. Rendering Sign In/Sign Up options.");
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
-        <h1 className="text-3xl font-bold mb-6">Welcome to Gutricious</h1>
-        <p className="mb-4">Please choose an option to continue:</p>
-        <div className="flex space-x-4">
-          <button
-            onClick={() => {
-              console.log("[NAVIGATION] Redirecting to Sign In with token:", token);
-              router.push(`/auth/signin?token=${token}`);
-            }}
-            className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600"
-          >
-            Sign In
-          </button>
-          <button
-            onClick={() => {
-              console.log("[NAVIGATION] Redirecting to Sign Up with token:", token);
-              router.push(`/auth/signup?token=${token}`);
-            }}
-            className="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600"
-          >
-            Sign Up
-          </button>
+    return renderPageContainer(
+      <div className="w-full bg-white rounded-lg shadow-xl md:mt-0 sm:max-w-md xl:p-0">
+        <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
+          <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl text-center">
+            Welcome to Gutricious
+          </h1>
+          <p className="text-center text-gray-700 mb-6">Please choose an option to continue</p>
+          
+          <div className="space-y-4">
+            <button
+              onClick={() => {
+                console.log("[NAVIGATION] Redirecting to Sign In with token:", token);
+                router.push(`/auth/signin?token=${token}`);
+              }}
+              className="btn-primary bg-[#2ae8d3] w-full"
+            >
+              Sign In
+            </button>
+            
+            <button
+              onClick={() => {
+                console.log("[NAVIGATION] Redirecting to Sign Up with token:", token);
+                router.push(`/auth/signup?token=${token}`);
+              }}
+              className="w-full border border-gray-300 text-gray-700 p-2.5 rounded-lg hover:bg-gray-50"
+            >
+              Sign Up
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -154,4 +202,12 @@ export default function ValidatePage() {
   console.log("[RENDER] Default render path reached. No additional UI to display.");
   // When a session exists or other redirection is handled, render nothing.
   return null;
+}
+
+export default function ValidatePageRoute() {
+  return (
+    <SuspenseWrapper>
+      <ValidatePage />
+    </SuspenseWrapper>
+  );
 }
