@@ -6,17 +6,16 @@ import { routes } from '@/utils/routes';
 import { IMAGE_URL } from '@/utils/image_url';
 import { CiGlobe } from 'react-icons/ci';
 import { Popover } from 'react-tiny-popover';
-import { useState, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { languages } from '@/utils/languages';
 import { createSharedPathnamesNavigation } from 'next-intl/navigation';
 import { usePathname } from 'next/navigation';
+import { useLocale, useTranslations } from 'next-intl';
 
 // Add language types and constants
 type LocalActiveType = string;
 
-const { Link: IntlLink, useRouter: useIntlRouter } = createSharedPathnamesNavigation({ locales: ['en', 'de', 'fr', 'es', 'it', 'nl', 'pt'], defaultLocale: 'en' });
-
-
+const {  useRouter: useIntlRouter } = createSharedPathnamesNavigation({ locales: ['en', 'de', 'fr', 'es', 'it', 'nl', 'pt'], defaultLocale: 'en' });
 
 interface NavigationProps {
   navOpen: boolean;
@@ -40,14 +39,14 @@ export const Navigation: React.FC<NavigationProps> = ({
   setIsHovered,
   isLangBtnHovered,
   setIsLangBtnHovered,
-  locale = 'en',
- 
 }) => {
-  const [selectedLanguage, setSelectedLanguage] = useState<LocalActiveType>(locale);
+  const t = useTranslations('Index');
   const pathname = usePathname();
   const intlRouter = useIntlRouter();
   const [isPending, startTransition] = useTransition();
 
+  const currentLocale = useLocale(); 
+  const [selectedLanguage, setSelectedLanguage] = useState<LocalActiveType>(currentLocale);
   const handleLanguageChange = (newLocale: string) => {
     startTransition(() => {
       // Save the selected language to state
@@ -65,16 +64,20 @@ export const Navigation: React.FC<NavigationProps> = ({
       if (pathSegments.length > 1 && locales.includes(pathSegments[1])) {
         // Remove the locale segment
         routePath = '/' + pathSegments.slice(2).join('/');
+        if (routePath === '/') routePath = ''; // Handle root path
       }
       
       // Navigate to the same page but with the new locale
-      intlRouter.replace(routePath, { locale: newLocale });
+      intlRouter.replace(routePath || '/', { locale: newLocale });
       
       // Close the language popover
       setLangOpen(false);
     });
   };
-
+  
+  useEffect(() => {
+    setSelectedLanguage(currentLocale);
+  }, [currentLocale]);
 
   return (
     <nav className="dark mx-auto flex w-full items-center justify-between pr-[10px] main-nav">
@@ -186,34 +189,34 @@ export const Navigation: React.FC<NavigationProps> = ({
             <ul className="navigation__list flex flex-col">
               <li className="navigation__item">
                 <Link href={routes[selectedLanguage]['home']} className="inline-block">
-                  <span className="navigation__link">Home</span>
+                  <span className="navigation__link">{t('Home')}</span>
                 </Link>
               </li>
               <li className="navigation__item">
                 <Link href={routes[selectedLanguage]['about-us']} className="inline-block">
-                  <span className="navigation__link">About Us</span>
+                  <span className="navigation__link">{t('About_Us')}</span>
                 </Link>
               </li>
               <li className="navigation__item">
                 <Link href={routes[selectedLanguage]['our-studies']} className="inline-block">
-                  <span className="navigation__link">Our Studies</span>
+                  <span className="navigation__link">{t('Our_Studies')}</span>
                 </Link>
               </li>
               <li className="navigation__item">
                 <Link href={routes[selectedLanguage]['terms-of-use']} className="inline-block">
-                  <span className="navigation__link">Terms of Service</span>
+                  <span className="navigation__link">{t('Terms_of_Service')}</span>
                 </Link>
               </li>
               {routes[selectedLanguage]['cookies'] && (
                 <li className="navigation__item">
                   <Link href={routes[selectedLanguage]['cookies']} className="inline-block">
-                    <span className="navigation__link">Cookies Policy</span>
+                    <span className="navigation__link">{t('Cookies_Policy')}</span>
                   </Link>
                 </li>
               )}
               <li className="navigation__item">
                 <Link href={routes[selectedLanguage]['privacy']} className="inline-block">
-                  <span className="navigation__link">Privacy Policy</span>
+                  <span className="navigation__link">{t('Privacy_Policy')}</span>
                 </Link>
               </li>
             </ul>

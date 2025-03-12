@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useTranslations } from 'next-intl';
 
 interface ServiceAgreementModalProps {
   onAccept: () => void;
@@ -16,6 +17,7 @@ interface ServiceAgreementModalProps {
 const ServiceAgreementModal: React.FC<ServiceAgreementModalProps> = ({
   onAccept
 }) => {
+  const t = useTranslations('serviceAgreement');
   const [agreed, setAgreed] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
@@ -34,8 +36,8 @@ const ServiceAgreementModal: React.FC<ServiceAgreementModalProps> = ({
         <div className="relative">
           <div className="absolute top-0 left-0 right-0 h-1.5 bg-[#2ae8d3] rounded-t-xl"></div>
           <div className="p-6">
-            <h2 className="text-2xl font-bold text-gray-800">Service Agreement</h2>
-            <p className="text-gray-600 mt-1">Please review our terms before proceeding</p>
+            <h2 className="text-2xl font-bold text-gray-800">{t('title')}</h2>
+            <p className="text-gray-600 mt-1">{t('subtitle')}</p>
           </div>
         </div>
 
@@ -44,36 +46,36 @@ const ServiceAgreementModal: React.FC<ServiceAgreementModalProps> = ({
           <div className="max-h-[350px] overflow-y-auto p-5 bg-white rounded-lg border border-gray-100">
             <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
               <span className="inline-block w-2 h-5 bg-[#f8e43f] rounded mr-2"></span>
-              Terms & Conditions
+              {t('termsAndConditions')}
             </h3>
             
             <div className="space-y-4 text-gray-700">
-              <p>Welcome to our service. By accessing or using our platform, you agree to be bound by these Terms and Conditions.</p>
+              <p>{t('welcome')}</p>
               
               <h4 className="text-lg font-medium text-gray-800 mt-5 flex items-center">
-                <span className="text-[#2ae8d3] mr-2">1.</span> Service Description
+                <span className="text-[#2ae8d3] mr-2">1.</span> {t('sections.serviceDescription.title')}
               </h4>
-              <p>Our platform provides tools and resources for [service description]. These services are subject to change at our discretion.</p>
+              <p>{t('sections.serviceDescription.content')}</p>
               
               <h4 className="text-lg font-medium text-gray-800 mt-5 flex items-center">
-                <span className="text-[#2ae8d3] mr-2">2.</span> User Responsibilities
+                <span className="text-[#2ae8d3] mr-2">2.</span> {t('sections.userResponsibilities.title')}
               </h4>
-              <p>Users are responsible for maintaining the confidentiality of their account information and for all activities that occur under their account.</p>
+              <p>{t('sections.userResponsibilities.content')}</p>
               
               <h4 className="text-lg font-medium text-gray-800 mt-5 flex items-center">
-                <span className="text-[#2ae8d3] mr-2">3.</span> Privacy Policy
+                <span className="text-[#2ae8d3] mr-2">3.</span> {t('sections.privacyPolicy.title')}
               </h4>
-              <p>Our Privacy Policy governs the collection, use, and disclosure of personal information we receive from users of our service.</p>
+              <p>{t('sections.privacyPolicy.content')}</p>
               
               <h4 className="text-lg font-medium text-gray-800 mt-5 flex items-center">
-                <span className="text-[#2ae8d3] mr-2">4.</span> Intellectual Property
+                <span className="text-[#2ae8d3] mr-2">4.</span> {t('sections.intellectualProperty.title')}
               </h4>
-              <p>All content, features, and functionality of our service are owned by us and are protected by international copyright, trademark, and other intellectual property laws.</p>
+              <p>{t('sections.intellectualProperty.content')}</p>
               
               <h4 className="text-lg font-medium text-gray-800 mt-5 flex items-center">
-                <span className="text-[#2ae8d3] mr-2">5.</span> Termination
+                <span className="text-[#2ae8d3] mr-2">5.</span> {t('sections.termination.title')}
               </h4>
-              <p>We may terminate or suspend your account and access to our service immediately, without prior notice or liability, for any reason.</p>
+              <p>{t('sections.termination.content')}</p>
             </div>
           </div>
         </div>
@@ -94,7 +96,7 @@ const ServiceAgreementModal: React.FC<ServiceAgreementModalProps> = ({
               />
             </div>
             <label htmlFor="terms" className="text-gray-700 font-medium cursor-pointer select-none">
-              I have read and agree to the Terms and Conditions
+              {t('agreement')}
             </label>
           </div>
         </div>
@@ -107,7 +109,7 @@ const ServiceAgreementModal: React.FC<ServiceAgreementModalProps> = ({
             className="px-6 py-2 border-2 border-gray-200 text-gray-600 font-medium rounded-lg 
               hover:bg-gray-50 transition-all duration-200"
           >
-            Decline
+            {t('decline')}
           </Button>
           <Button 
             onClick={onAccept}
@@ -117,7 +119,7 @@ const ServiceAgreementModal: React.FC<ServiceAgreementModalProps> = ({
                 ? 'bg-[#2ae8d3] text-gray-800 hover:bg-[#25d1be]' 
                 : 'bg-gray-200 text-gray-500'} disabled:opacity-60 disabled:cursor-not-allowed`}
           >
-            Accept
+            {t('accept')}
           </Button>
         </div>
       </DialogContent>

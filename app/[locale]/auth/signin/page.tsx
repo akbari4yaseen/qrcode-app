@@ -8,6 +8,7 @@ import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import axios from 'axios';
+import { useTranslations } from 'next-intl';
 
 import ServiceAgreementModal from '@/components/ServiceAgreementModal';
 import SuspenseWrapper from '@/components/SuspenseWrapper';
@@ -36,6 +37,8 @@ const ERROR_MESSAGES: Partial<Record<string, string>> = {
 let codeRun = false;
 
 function PageLogin() {
+  const t = useTranslations('Index');
+  const tLogin = useTranslations('login');
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
@@ -90,7 +93,7 @@ function PageLogin() {
           router.push(`/unverified-account`);
         }
 
-        toast.error("Unable to sign in");
+        toast.error(tLogin('unableToSignIn'));
 
         setError(errorMessage);
         return;
@@ -109,10 +112,10 @@ function PageLogin() {
             qrCode: token,
           });
           console.log("Sign up response:", res.data);
-          alert('Registration successful!');
+          alert(tLogin('registrationSuccessful'));
         } catch (error) {
           console.error('Error signing up or Invalid QR Code:', error);
-          alert('Error signing up or Invalid QR Code');
+          alert(tLogin('errorSigningUp'));
           return;
         }
       }
@@ -120,8 +123,8 @@ function PageLogin() {
       router.push(result.url);
 
     } catch (err) {
-      toast("We encountered an unknown error while attempting to sign you in. Please try again later.");
-      setError('An unknown error occurred. Please try again later.');
+      toast(tLogin('unknownError'));
+      setError(tLogin('unknownErrorTryAgain'));
     }
   };
 
@@ -149,13 +152,13 @@ function PageLogin() {
           <div className="w-full bg-white rounded-lg shadow-xl md:mt-0 sm:max-w-md xl:p-0">
             <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
               <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
-                {welcomeBack ? 'Welcome Back' : 'Welcome'}
+                {welcomeBack ? t('welcomeBack') : t('welcome')}
               </h1>
               
               <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit(onFormSubmit)}>
                 <div>
                   <label htmlFor="email" className="block mb-2 text-sm font-light text-gray-900">
-                    Your email
+                    {t('welcomeOrWelcomeBackPage.yourEmail')}
                   </label>
                   <input
                     {...register('email')}
@@ -163,7 +166,7 @@ function PageLogin() {
                     id="email"
                     className="bg-gray-50 border border-gray-300 sm:text-sm rounded-lg focus:ring-black focus:border-black block w-full p-2.5 text-black placeholder:text-gray-500"
                     style={{ background: '#F9FAFB' }}
-                    placeholder="name@company.com"
+                    placeholder={t('welcomeOrWelcomeBackPage.emailPlaceholder')}
                   />
                   {errors.email && (
                     <p className="mt-2 text-sm text-red-600">{errors.email.message}</p>
@@ -172,13 +175,13 @@ function PageLogin() {
 
                 <div>
                   <label htmlFor="password" className="block mb-2 text-sm font-light text-gray-900">
-                    Password
+                    {t('welcomeOrWelcomeBackPage.password')}
                   </label>
                   <input
                     {...register('password')}
                     type="password"
                     id="password"
-                    placeholder="Enter your password"
+                    placeholder={t('welcomeOrWelcomeBackPage.passwordPlaceholder')}
                     className="bg-gray-50 border border-gray-300 sm:text-sm rounded-lg focus:ring-black focus:border-black block w-full p-2.5 text-black placeholder:text-gray-500"
                     style={{ background: '#F9FAFB' }}
                   />
@@ -194,12 +197,12 @@ function PageLogin() {
                 <div className="flex items-center justify-between">
                   <div></div>
                   <Link href="/auth/signup" tabIndex={-1} className="text-gray-700 hover:underline text-sm font-medium">
-                    Not have an account? Sign up
+                    {tLogin('noAccount')}
                   </Link>
                 </div>
 
                 <button type="submit" className="btn-primary bg-[#2ae8d3] w-full">
-                  Sign in
+                  {t('welcomeOrWelcomeBackPage.signIn')}
                 </button>
               </form>
             </div>

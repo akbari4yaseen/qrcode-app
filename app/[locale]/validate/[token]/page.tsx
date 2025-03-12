@@ -3,12 +3,14 @@
 import React, { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useParams, useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import ServiceAgreementModal from '@/components/ServiceAgreementModal';
 import axios from 'axios';
 import { Navigation } from '@/components/Navigation';
 import SuspenseWrapper from '@/components/SuspenseWrapper';
 
 function ValidatePage() {
+  const t = useTranslations('validation');
   const params = useParams<{ token: string }>();
   const token = params.token;
   const router = useRouter();
@@ -69,10 +71,10 @@ function ValidatePage() {
         qrCode: token,
       });
       console.log("[AGREEMENT] Registration successful. Response:", res.data);
-      alert('Registration successful!');
+      alert(t('registrationSuccessful'));
     } catch (error) {
       console.error('[AGREEMENT] Error signing up or Invalid QR Code:', error);
-      alert('Error signing up or Invalid QR Code:');
+      alert(t('errorSigningUp'));
     }
   };
 
@@ -130,7 +132,7 @@ function ValidatePage() {
       <div className="w-full bg-white rounded-lg shadow-xl md:mt-0 sm:max-w-md xl:p-0">
         <div className="p-6 space-y-4 md:space-y-6 sm:p-8 flex flex-col items-center justify-center">
           <div className="w-12 h-12 rounded-full border-4 border-t-[#2ae8d3] border-r-[#2ae8d3] border-b-gray-200 border-l-gray-200 animate-spin"></div>
-          <p className="text-gray-700 mt-4">Validating your token...</p>
+          <p className="text-gray-700 mt-4">{t('validatingToken')}</p>
         </div>
       </div>
     );
@@ -143,13 +145,13 @@ function ValidatePage() {
       <div className="w-full bg-white rounded-lg shadow-xl md:mt-0 sm:max-w-md xl:p-0">
         <div className="p-6 space-y-4 md:space-y-6 sm:p-8 text-center">
           <div className="text-red-500 text-5xl mb-4">×</div>
-          <h2 className="text-xl font-bold text-gray-900">Invalid or Expired Token</h2>
-          <p className="text-gray-700 mb-4">The validation link you've used is no longer valid.</p>
+          <h2 className="text-xl font-bold text-gray-900">{t('invalidToken')}</h2>
+          <p className="text-gray-700 mb-4">{t('tokenExpired')}</p>
           <button 
             onClick={() => router.push('/')}
             className="btn-primary bg-[#2ae8d3] w-full"
           >
-            Return to Home
+            {t('returnToHome')}
           </button>
         </div>
       </div>
@@ -169,9 +171,9 @@ function ValidatePage() {
       <div className="w-full bg-white rounded-lg shadow-xl md:mt-0 sm:max-w-md xl:p-0">
         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
           <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl text-center">
-            Welcome to Gutricious
+            {t('welcome')}
           </h1>
-          <p className="text-center text-gray-700 mb-6">Please choose an option to continue</p>
+          <p className="text-center text-gray-700 mb-6">{t('chooseContinue')}</p>
           
           <div className="space-y-4">
             <button
@@ -181,7 +183,7 @@ function ValidatePage() {
               }}
               className="btn-primary bg-[#2ae8d3] w-full"
             >
-              Sign In
+              {t('signIn')}
             </button>
             
             <button
@@ -191,7 +193,7 @@ function ValidatePage() {
               }}
               className="w-full border border-gray-300 text-gray-700 p-2.5 rounded-lg hover:bg-gray-50"
             >
-              Sign Up
+              {t('signUp')}
             </button>
           </div>
         </div>

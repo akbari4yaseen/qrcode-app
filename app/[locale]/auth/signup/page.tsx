@@ -7,6 +7,7 @@ import { z } from 'zod';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import axios from 'axios';
+import { useTranslations } from 'next-intl';
 
 import ServiceAgreementModal from '@/components/ServiceAgreementModal';
 import SuspenseWrapper from '@/components/SuspenseWrapper';
@@ -31,6 +32,9 @@ type SignUpFormInputs = z.infer<typeof signupSchema>;
 let codeRun = false;
 
 function PageSignUp() {
+  const t = useTranslations('Index');
+  const tSignup = useTranslations('signup');
+  
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
@@ -69,13 +73,13 @@ function PageSignUp() {
         qrCode: token,
       });
       
-      toast.success("Registration successful!");
+      toast.success(tSignup('registrationSuccessful'));
       router.push('/auth/signin');
       
     } catch (error) {
       console.error('Error signing up or Invalid QR Code:', error);
-      toast.error("Error signing up or Invalid QR Code");
-      setError('An error occurred during sign up. Please try again later.');
+      toast.error(tSignup('errorSigningUp'));
+      setError(tSignup('tryAgainLater'));
     }
   };
 
@@ -103,13 +107,13 @@ function PageSignUp() {
           <div className="w-full bg-white rounded-lg shadow-xl md:mt-0 sm:max-w-md xl:p-0">
             <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
               <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
-                Create an Account
+                {tSignup('createAccount')}
               </h1>
               
               <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit(onFormSubmit)}>
                 <div>
                   <label htmlFor="firstName" className="block mb-2 text-sm font-light text-gray-900">
-                    First Name
+                    {tSignup('firstName')}
                   </label>
                   <input
                     {...register('firstName')}
@@ -117,7 +121,7 @@ function PageSignUp() {
                     id="firstName"
                     className="bg-gray-50 border border-gray-300 sm:text-sm rounded-lg focus:ring-black focus:border-black block w-full p-2.5 text-black placeholder:text-gray-500"
                     style={{ background: '#F9FAFB' }}
-                    placeholder="Enter your first name"
+                    placeholder={tSignup('firstNamePlaceholder')}
                   />
                   {errors.firstName && (
                     <p className="mt-2 text-sm text-red-600">{errors.firstName.message}</p>
@@ -126,7 +130,7 @@ function PageSignUp() {
 
                 <div>
                   <label htmlFor="lastName" className="block mb-2 text-sm font-light text-gray-900">
-                    Last Name
+                    {tSignup('lastName')}
                   </label>
                   <input
                     {...register('lastName')}
@@ -134,7 +138,7 @@ function PageSignUp() {
                     id="lastName"
                     className="bg-gray-50 border border-gray-300 sm:text-sm rounded-lg focus:ring-black focus:border-black block w-full p-2.5 text-black placeholder:text-gray-500"
                     style={{ background: '#F9FAFB' }}
-                    placeholder="Enter your last name"
+                    placeholder={tSignup('lastNamePlaceholder')}
                   />
                   {errors.lastName && (
                     <p className="mt-2 text-sm text-red-600">{errors.lastName.message}</p>
@@ -143,7 +147,7 @@ function PageSignUp() {
 
                 <div>
                   <label htmlFor="email" className="block mb-2 text-sm font-light text-gray-900">
-                    Your email
+                    {t('welcomeOrWelcomeBackPage.yourEmail')}
                   </label>
                   <input
                     {...register('email')}
@@ -151,7 +155,7 @@ function PageSignUp() {
                     id="email"
                     className="bg-gray-50 border border-gray-300 sm:text-sm rounded-lg focus:ring-black focus:border-black block w-full p-2.5 text-black placeholder:text-gray-500"
                     style={{ background: '#F9FAFB' }}
-                    placeholder="name@company.com"
+                    placeholder={t('welcomeOrWelcomeBackPage.emailPlaceholder')}
                   />
                   {errors.email && (
                     <p className="mt-2 text-sm text-red-600">{errors.email.message}</p>
@@ -160,13 +164,13 @@ function PageSignUp() {
 
                 <div>
                   <label htmlFor="password" className="block mb-2 text-sm font-light text-gray-900">
-                    Password
+                    {t('welcomeOrWelcomeBackPage.password')}
                   </label>
                   <input
                     {...register('password')}
                     type="password"
                     id="password"
-                    placeholder="Create a password"
+                    placeholder={tSignup('createPasswordPlaceholder')}
                     className="bg-gray-50 border border-gray-300 sm:text-sm rounded-lg focus:ring-black focus:border-black block w-full p-2.5 text-black placeholder:text-gray-500"
                     style={{ background: '#F9FAFB' }}
                   />
@@ -177,13 +181,13 @@ function PageSignUp() {
 
                 <div>
                   <label htmlFor="confirmPassword" className="block mb-2 text-sm font-light text-gray-900">
-                    Confirm Password
+                    {tSignup('confirmPassword')}
                   </label>
                   <input
                     {...register('confirmPassword')}
                     type="password"
                     id="confirmPassword"
-                    placeholder="Confirm your password"
+                    placeholder={tSignup('confirmPasswordPlaceholder')}
                     className="bg-gray-50 border border-gray-300 sm:text-sm rounded-lg focus:ring-black focus:border-black block w-full p-2.5 text-black placeholder:text-gray-500"
                     style={{ background: '#F9FAFB' }}
                   />
@@ -197,13 +201,13 @@ function PageSignUp() {
                 )}
 
                 <button type="submit" className="btn-primary bg-[#2ae8d3] w-full">
-                  Sign up
+                  {tSignup('signUp')}
                 </button>
 
                 <p className="text-sm font-light text-gray-700">
-                  Already have an account?{' '}
+                  {tSignup('alreadyHaveAccount')}{' '}
                   <Link href="/auth/signin" className="font-medium text-gray-700 hover:underline">
-                    Sign in
+                    {t('welcomeOrWelcomeBackPage.signIn')}
                   </Link>
                 </p>
               </form>
