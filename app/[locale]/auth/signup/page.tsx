@@ -99,9 +99,7 @@ function PageSignUp() {
       </div>
 
       <div className="flex flex-col items-center justify-center mt-[50px] px-6 py-8 mx-auto lg:py-0 cera-pro-font no-65">
-        {showAgreement && (
-          <ServiceAgreementModal onAccept={() => setShowAgreement(false)} />
-        )}
+       
         
         {!showAgreement && (
           <div className="w-full bg-white rounded-lg shadow-xl md:mt-0 sm:max-w-md xl:p-0">
