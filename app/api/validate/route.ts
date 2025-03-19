@@ -6,6 +6,7 @@ const backend_url = "http://116.203.82.82:8093/api/v1/qrcode-app";
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const token = searchParams.get("token");
+  console.log("Token:", token);
 
   if (!token) {
     return NextResponse.json({ error: "Token is required" }, { status: 400 });

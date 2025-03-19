@@ -52,43 +52,38 @@ function ValidatePage() {
     validateToken();
   }, [token]);
 
-  // Original handler for agreement acceptance
+  // Updated handler for agreement acceptance
   const handleAgreementAccept = async () => {
-    if (!session?.user) {
-      console.warn("[AGREEMENT] No session user available on agreement acceptance.");
-      return;
-    }
     console.log("[AGREEMENT] Service agreement accepted.");
     setAgreementAccepted(true);
     setShowAgreement(false);
-    console.log("[AGREEMENT] Agreement accepted, redirecting to", targetRoute);
-    console.log("[AGREEMENT] Session email:", session?.user?.email, "QR code:", token);
-    try {
-      console.log("[AGREEMENT] Sending registration request to backend.");
-      const res = await axios.post(`/api/keycloak/users/qrcode`, {
-        email: session.user.email,
-        password: 'default-password',
-        qrCode: token,
-      });
-      console.log("[AGREEMENT] Registration successful. Response:", res.data);
-      alert(t('registrationSuccessful'));
-    } catch (error) {
-      console.error('[AGREEMENT] Error signing up or Invalid QR Code:', error);
-      alert(t('errorSigningUp'));
+    if (session?.user) {
+      console.log("[AGREEMENT] Session email:", session.user.email, "QR code:", token);
+      try {
+        console.log("[AGREEMENT] Sending registration request to backend.");
+        const res = await axios.post(`/api/keycloak/users/qrcode`, {
+          email: session.user.email,
+          password: 'default-password',
+          qrCode: token,
+        });
+        console.log("[AGREEMENT] Registration successful. Response:", res.data);
+        alert(t('registrationSuccessful'));
+      } catch (error) {
+        console.error('[AGREEMENT] Error signing up or Invalid QR Code:', error);
+        alert(t('errorSigningUp'));
+      }
     }
   };
 
-  // Original redirection logic
+  // Updated redirection logic
   useEffect(() => {
     console.log("[REDIRECT] Checking redirection conditions:", { loading, isTokenValid, session, agreementAccepted });
-    if (!loading && isTokenValid) {
-      if (session && !agreementAccepted) {
-        console.log("[REDIRECT] Session exists but agreement not accepted. Showing service agreement modal.");
-        setShowAgreement(true);
-      } else if (session && agreementAccepted) {
-        console.log("[REDIRECT] Session exists and agreement accepted. Redirecting to dashboard...");
-        // Implement dashboard redirection logic here if needed
-      }
+    if (!loading && isTokenValid && !agreementAccepted) {
+      console.log("[REDIRECT] Agreement not accepted. Showing service agreement modal.");
+      setShowAgreement(true);
+    } else if (!loading && isTokenValid && session && agreementAccepted) {
+      console.log("[REDIRECT] Session exists and agreement accepted. Redirecting to dashboard...");
+      // Implement dashboard redirection logic here if needed
     }
   }, [loading, isTokenValid, session, agreementAccepted, router]);
 
