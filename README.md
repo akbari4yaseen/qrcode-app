@@ -1,3 +1,6 @@
+# Things to do (Waleed)
+-  signup form ui/i8n
+
 # QRCode-App Documentation
 
 This document provides an overview of the **QRCode-App** and its functionalities, including its interaction with the **qr-code-backend** and **central-server**.
