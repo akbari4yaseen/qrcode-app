@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
 
-const backend_url = "http://116.203.82.82:8093/api/v1/qrcode-app";
+const backend_url = "http://116.203.82.82:8093/api/v1/qrcodes";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
